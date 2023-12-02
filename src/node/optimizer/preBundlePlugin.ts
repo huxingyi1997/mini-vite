@@ -67,7 +67,7 @@ export function preBundlePlugin(deps: Set<string>): Plugin {
             );
           } else {
             // esm 格式比较好处理，export * 或者 export default 即可
-            if (exports.includes("default" as unknown as ExportSpecifier)) {
+            if (exports.some((value) => value.n === "default")) {
               proxyModule.push(`import d from "${entryPath}";export default d`);
             }
             proxyModule.push(`export * from "${entryPath}"`);

@@ -9,6 +9,8 @@ import { resolvePlugins } from "../plugins";
 import { createPluginContainer, PluginContainer } from "../pluginContainer";
 import { Plugin } from "../plugin";
 import { indexHtmlMiddware } from "./middlewares/indexHtml";
+import { transformMiddleware } from "./middlewares/transform";
+import { normalizePath } from "../utils";
 
 export interface ServerContext {
   root: string;
@@ -24,9 +26,10 @@ export async function startDevServer() {
 
   const plugins = resolvePlugins();
   const pluginContainer = createPluginContainer(plugins);
-
+  
+  // 开发服务器上下文
   const serverContext: ServerContext = {
-    root: process.cwd(),
+    root: normalizePath(process.cwd()),
     app,
     pluginContainer,
     plugins,
@@ -37,6 +40,9 @@ export async function startDevServer() {
       await plugin.configureServer(serverContext);
     }
   }
+  // 核心编译逻辑
+  app.use(transformMiddleware(serverContext));
+
   // 处理入口 HTML 资源
   app.use(indexHtmlMiddware(serverContext));
 
