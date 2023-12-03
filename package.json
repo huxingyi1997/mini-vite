@@ -11,6 +11,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@babel/core": "^7.23.5",
     "cac": "^6.7.14",
     "chokidar": "^3.5.3",
     "connect": "^3.7.0",
@@ -26,11 +27,13 @@
     "ws": "^8.14.2"
   },
   "devDependencies": {
+    "@types/babel__core": "^7.20.5",
     "@types/connect": "^3.4.38",
     "@types/debug": "^4.1.12",
     "@types/fs-extra": "^11.0.4",
     "@types/resolve": "^1.20.6",
     "@types/ws": "^8.5.10",
+    "react-refresh": "^0.14.0",
     "tsup": "^8.0.1",
     "typescript": "^5.3.2"
   },

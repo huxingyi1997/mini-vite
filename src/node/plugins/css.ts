@@ -18,18 +18,25 @@ export function cssPlugin(): Plugin {
         return readFile(id, "utf-8");
       }
     },
-    // 转换逻辑
+    // 转换逻辑,主要变动在 transform 钩子中
     async transform(code, id) {
       if (id.endsWith(".css")) {
         // 包装成 JS 模块
         const jsContent = `
+import { createHotContext as __vite__createHotContext } from "${CLIENT_PUBLIC_PATH}";
+import.meta.hot = __vite__createHotContext("/${getShortName(
+          id,
+          serverContext.root
+        )}");
+import { updateStyle, removeStyle } from "${CLIENT_PUBLIC_PATH}"
+  
+const id = '${id}';
 const css = \`${code.replace(/\n/g, "")}\`;
-const style = document.createElement("style");
-style.setAttribute("type", "text/css");
-style.innerHTML = css;
-document.head.appendChild(style);
+
+updateStyle(id, css);
+import.meta.hot.accept();
 export default css;
-`.trim();
+import.meta.hot.prune(() => removeStyle(id));`.trim();
         return {
           code: jsContent,
         };
